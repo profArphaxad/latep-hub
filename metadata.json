@@ -1,0 +1,6 @@
+{
+  "name": "Latep Hub",
+  "description": "Bespoke LaTeX document formatting, PowerPoint deck presentation design, and academic/corporate project design services under the Latep Hub banner, featuring an elegant tracking dashboard and a functional payment simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

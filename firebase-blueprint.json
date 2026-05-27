@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "order": {
+      "title": "Order",
+      "description": "An academic or corporate typesetting, LaTeX, or presentation order with tracking and verification features.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique serial tracker ID e.g., TRACK-LATE-1234"
+        },
+        "audience": {
+          "type": "string",
+          "enum": ["student", "school", "corporate"],
+          "description": "Target audience tier"
+        },
+        "serviceType": {
+          "type": "string",
+          "enum": ["latex", "ppt", "project"],
+          "description": "Chosen core service module"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or topic of the document work"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed prompt or design requirements"
+        },
+        "pageCount": {
+          "type": "number",
+          "description": "Total count of pages or design slides"
+        },
+        "urgency": {
+          "type": "string",
+          "enum": ["standard", "express", "rush"],
+          "description": "Delivery urgency standard"
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "Exact calculated cost in Ksh"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending_payment", "received", "in_progress", "review", "completed"],
+          "description": "Current state in lifecycle"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of submission time"
+        },
+        "deliveryDate": {
+          "type": "string",
+          "description": "ISO timestamp of target execution/delivery date"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Full name of the client"
+        },
+        "customerEmail": {
+          "type": "string",
+          "description": "Contact email of the client"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "List of draft documents submitted by client"
+        },
+        "timeline": {
+          "type": "array",
+          "description": "Progress timestamps and descriptive checkpoints mapping"
+        },
+        "paymentInfo": {
+          "type": "object",
+          "description": "Payment metadata for verification including M-Pesa details"
+        },
+        "deliverableLinks": {
+          "type": "array",
+          "description": "Download URLs of final deliverables uploaded by admin"
+        },
+        "revisionComments": {
+          "type": "array",
+          "description": "Revisions or feedback log submitted for active proofing checks"
+        }
+      },
+      "required": [
+        "id",
+        "audience",
+        "serviceType",
+        "title",
+        "pageCount",
+        "totalPrice",
+        "status",
+        "createdAt",
+        "customerName",
+        "customerEmail"
+      ]
+    },
+    "testimonial": {
+      "title": "Testimonial",
+      "description": "Verified customer feedback reviews to build student and corporate trust.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "review": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "isVerified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "rating",
+        "review",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "orders": {
+      "schema": "order",
+      "description": "Collection of all submitted client orders"
+    },
+    "testimonials": {
+      "schema": "testimonial",
+      "description": "Public review profiles for layout endorsements"
+    }
+  }
+}

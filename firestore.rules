@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net catch-all block
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable core security validation primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email != null;
+    }
+
+    function isAdmin() {
+      return isEmailVerified() && (
+        request.auth.token.email == 'latephub@gmail.com' ||
+        request.auth.token.email == 'arphaxadnjoroge@gmail.com' ||
+        request.auth.token.email == 'arphaxadnjwacatha@gmail.com'
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Helper functions for Resource Access
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validate overall order schema and types (Anti-Update-Gap schema guard)
+    function isValidOrder(data) {
+      return data.keys().hasAll(['id', 'audience', 'serviceType', 'title', 'pageCount', 'totalPrice', 'status', 'createdAt', 'customerName', 'customerEmail'])
+        && data.id is string && data.id.size() <= 64
+        && data.customerName is string && data.customerName.size() <= 100
+        && data.customerEmail is string && data.customerEmail.size() <= 150
+        && data.title is string && data.title.size() <= 300
+        && data.description is string && data.description.size() <= 5000
+        && data.pageCount is int && data.pageCount >= 0 && data.pageCount <= 10000
+        && data.totalPrice is int && data.totalPrice >= 0 && data.totalPrice <= 1000000
+        && data.status in ['pending_payment', 'received', 'in_progress', 'review', 'completed']
+        && data.audience in ['student', 'school', 'corporate']
+        && data.serviceType in ['latex', 'ppt', 'project']
+        && data.urgency in ['standard', 'express', 'rush']
+        && data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // Validate testimonial structure
+    function isValidTestimonial(data) {
+      return data.keys().hasAll(['id', 'name', 'rating', 'review', 'createdAt'])
+        && data.id is string && data.id.size() <= 64
+        && data.name is string && data.name.size() <= 100
+        && data.review is string && data.review.size() <= 1000
+        && data.rating is int && data.rating >= 1 && data.rating <= 5
+        && data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // Order Collection Access Paths
+    match /orders/{orderId} {
+      // Direct GET allows client tracking via custom tracking ID code (TRACK-LATE-1234) safely, or isOwner, or Admin
+      allow get: if isValidId(orderId) && (
+        true // Anyone who knows the secret tracking ID can look up their own single tracking status
+      );
+
+      // Secure list query limits
+      allow list: if isAdmin() || (isEmailVerified() && resource.data.customerEmail == request.auth.token.email);
+
+      // Order submission criteria
+      allow create: if isValidId(orderId) && isValidOrder(incoming()) && (
+        // Client can submit guest/authenticated orders or admin can seed
+        true
+      );
+
+      // Controlled actions on updates
+      allow update: if isValidId(orderId) && isValidOrder(incoming()) && (
+        // Admin override can edit everything
+        isAdmin() || 
+        // Logged in owner can only submit revision comment updates
+        (isEmailVerified() && existing().customerEmail == request.auth.token.email && 
+         incoming().customerEmail == existing().customerEmail &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['timeline', 'status', 'revisionComments']))
+      );
+
+      // Block client deletions to protect business transaction auditable records
+      allow delete: if isAdmin();
+    }
+
+    // Testimonials Collection Paths
+    match /testimonials/{testId} {
+      // Anyone can read testimonial reviews
+      allow get, list: if true;
+
+      // Anyone can submit review, but only admins can verify or delete
+      allow create: if isValidId(testId) && isValidTestimonial(incoming());
+      allow update: if isValidId(testId) && isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

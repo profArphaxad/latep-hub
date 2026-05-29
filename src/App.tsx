@@ -798,14 +798,15 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => {
-                        setCurrentUser({ email: 'client.demo@example.com' });
+                        alert("Demo mode disabled. Please sign in with Google or Email.");
+                        return;);
                         setIsAuthModalOpen(false);
                         setActiveTab('services');
                       }}
                       className="w-full bg-neutral-50 hover:bg-neutral-100 font-bold uppercase text-[9px] tracking-wider py-2 rounded-xl text-neutral-700 flex items-center justify-center gap-1 transition-all cursor-pointer border border-neutral-200"
                     >
                       <Users className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>Sandbox Demo client (Eval bypass)</span>
+                      <span>Sandbox Demo client (disabled)</span>
                     </button>
                   </div>
                 )}

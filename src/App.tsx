@@ -799,7 +799,7 @@ export default function App() {
                       type="button"
                       onClick={() => {
                         alert("Demo mode disabled. Please sign in with Google or Email.");
-                        return;);
+                        return;
                         setIsAuthModalOpen(false);
                         setActiveTab('services');
                       }}

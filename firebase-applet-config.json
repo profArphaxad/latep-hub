@@ -1,8 +1,8 @@
 {
-  apiKey: "AIzaSyBINnB_ZmawWsRIPEavtgZB_6ZVxJZfSIg",
-  authDomain: "latephub-47664.firebaseapp.com",
-  projectId: "latephub-47664",
-  storageBucket: "latephub-47664.firebasestorage.app",
-  messagingSenderId: "418357345696",
-  appId: "1:418357345696:web:6bd49c5f45b6a42731f8c5"
+  "apiKey": "AIzaSyBINnB_ZmawWsRIPEavtgZB_6ZVxJZfSIg",
+  "authDomain": "latephub-47664.firebaseapp.com",
+  "projectId": "latephub-47664",
+  "storageBucket": "latephub-47664.firebasestorage.app",
+  "messagingSenderId": "418357345696",
+  "appId": "1:418357345696:web:6bd49c5f45b6a42731f8c5"
 }
